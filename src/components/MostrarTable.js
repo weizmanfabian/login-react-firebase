@@ -49,8 +49,9 @@ const MostrarTable = ({ title, data, urlEdit }) => {
                 <div className="card-body">
                     <table className="table">
                         <thead>
-                            <tr>
+                            <tr className='text-center'>
                                 <th scope="col">CC</th>
+                                <th scope="col">Email</th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Cargo</th>
                                 <th scope="col">Opciones</th>
@@ -60,10 +61,11 @@ const MostrarTable = ({ title, data, urlEdit }) => {
                             {data.map((v, i) => (
                                 <tr key={i}>
                                     <th scope="row">{v.cc}</th>
+                                    <td>{v.user}</td>
                                     <td>{v.nombre}</td>
                                     <td>{v.cargo}</td>
-                                    <td>
-                                        <Link className='btn btn-warning' to={`${urlEdit}/${v.id}`} >Editar</Link>
+                                    <td className='text-center'>
+                                        <Link className='btn btn-warning mx-1' to={`${urlEdit}/${v.id}`} >Editar</Link>
                                         <Link className='btn btn-danger' onClick={(e) => deleteRow(e, v)} >Eliminar</Link>
                                     </td>
                                 </tr>

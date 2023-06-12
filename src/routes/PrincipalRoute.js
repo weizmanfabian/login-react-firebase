@@ -27,6 +27,7 @@ const PrincipalRoute = () => {
                 } else {
                     // User is signed out
                     // ...
+                    setUser('')
                 }
             });
         }
