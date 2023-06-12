@@ -1,12 +1,5 @@
-
-export const login = async (form) => {
-  try {
-    const res = ''//await axios.post(`${urlServer}/login`, form)
-    return res
-  } catch (err) {
-    console.log(`err call login in api ${err}`);
-  }
-}
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { db } from "./Firebase";
 
 export const saveLocalStorage = (data, key) => {
   localStorage[key] = JSON.stringify(data)
@@ -18,3 +11,4 @@ export const cargos = [
   'Gerente',
   'Operario'
 ]
+
