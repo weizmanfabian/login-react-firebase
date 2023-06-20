@@ -6,7 +6,8 @@ import AuthRoute from "./AuthRoute";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from '../data/Firebase';
+import { auth, db } from '../data/Firebase';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 
 
@@ -22,6 +23,10 @@ const PrincipalRoute = () => {
                     // User is signed in, see docs for a list of available properties
                     // https://firebase.google.com/docs/reference/js/firebase.User
                     const uid = user.uid;
+                    const q = query(collection(db, "users"), where("id", "==", uid));
+                    onSnapshot(q, (querySnapshot) => {
+                        setUser(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[0])
+                    })
                     setUser(user)
                     // ...
                 } else {

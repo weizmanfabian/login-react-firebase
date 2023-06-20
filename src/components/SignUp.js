@@ -3,14 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { auth, db } from '../data/Firebase'
 import { cargos } from '../data/api';
 import Swal from 'sweetalert2';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { collection, doc, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { Toast } from 'bootstrap';
+import { useParams, useLocation } from "react-router-dom";
 
 const SignUp = ({ cargoARegistrar, pathBack }) => {
 
-    let navigate = useNavigate();
+    const location = useLocation()
 
     let { id } = useParams()
     id = id || 0
@@ -25,7 +24,6 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
     const [form, setForm] = useState(initialFormSignUp);
     const [title, setTitle] = useState('Registrar');
     const [nameBtn, setnameBtn] = useState('Guardar');
-    const [misCargos, setMisCargos] = useState([]);
     const [pass, setPass] = useState('');
 
     const init = () => {
@@ -36,12 +34,15 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
     }
 
     useEffect(() => {
-        if (id === 0) {
-            setTitle('Registrar')
-        } else {
-            setTitle('Actualizar')
-            return () => init()
+        const val = () => {
+            if (id === 0) {
+                setTitle('Registrar')
+            } else {
+                setTitle('Actualizar')
+                init()
+            }
         }
+        return () => val()
     }, [])
 
     const handleChange = (e) => {
@@ -57,7 +58,6 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
                     ...form,
                     id: success.user.uid
                 });
-                const user = success.user;
                 setForm(initialFormSignUp)
                 Swal.fire({
                     position: 'top-end',
@@ -67,7 +67,7 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
                     timer: 2000,
                     toast: true
                 });
-                return navigate(pathBack);
+                return location(pathBack);
             })
             .catch((error) => {
                 const errorMessage = error.message;
@@ -92,7 +92,7 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
                     timer: 2000,
                     toast: true
                 });
-                return navigate(pathBack);
+                return location(pathBack);
 
             })
             .catch((error) => {
@@ -128,7 +128,7 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="cc" className="form-label">CC:</label>
-                            <input type="text" disabled={id == 0 ? false : true} className="form-control" id="cc" name='cc' value={form.cc} onChange={handleChange} required />
+                            <input type="text" disabled={id === 0 ? false : true} className="form-control" id="cc" name='cc' value={form.cc} onChange={handleChange} required />
                         </div>
                         {id !== 0 && <div className="col-md-12">
                             <label htmlFor="cargo" className="form-label" >Cargo:</label>
