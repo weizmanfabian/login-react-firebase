@@ -65,8 +65,8 @@ const Login = ({ setUser }) => {
         <div className="d-flex align-items-center py-4">
             <main className="form-signin m-auto" style={{ width: "500px" }}>
                 <form onSubmit={submitLogin}>
-                    <div className='text-center'>
-                        <img src={hola} className="img-fluid" alt="..." />
+                    <div className='d-flex justify-content-center'>
+                        <img src={hola} className="img-fluid w-50" alt="..." />
                     </div>
                     {/* <img className="mb-4" src={hola} alt="" width="72" height="57" /> */}
                     <h1 className="h3 mb-3 fw-normal text-center">Please sign in</h1>

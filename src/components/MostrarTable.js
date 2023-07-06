@@ -41,7 +41,7 @@ const MostrarTable = ({ title, data, urlEdit }) => {
     }
 
     return (
-        <div className='container align-items-center'>
+        <div className='container align-items-center col-12'>
             <div className="card ">
                 <div className="card-header text-center">
                     {title}
