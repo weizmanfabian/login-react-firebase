@@ -11,10 +11,20 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
 
     const navigate = useNavigate();
     const regexEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/;
+    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/;
+    const regexOnlyNubers = /^\d+$/;
+    const regexOnlyNubersPositives = /^\+?(1|[1-9]\d*)$/;
+    const regexLengthNumberPhone = "(?=^.{7,10}$)(^\w+\s*(-?)(\s*\w+\s*)(\w+)$)"
 
     let { id } = useParams();
     id = id || 0;
+
+    let isEqualsJson = (obj1, obj2) => {
+        let keys1 = Object.keys(obj1);
+        let keys2 = Object.keys(obj2);
+        //return true when the two json has same length and all the properties has same value key by key
+        return keys1.length === keys2.length && Object.keys(obj1).every(key => obj1[key] == obj2[key]);
+    }
 
     const initialFormSignUp = {
         nombre: '',
@@ -24,30 +34,28 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
     };
 
     const onValidate = (form) => {
-        let isError = false;
         let errors = {};
         if (!form.nombre.trim()) {
             errors.nombre = `Este campo no debe estar vacío`;
-            isError = true;
         }
         if (!form.cc.trim()) {
             errors.cc = `Este campo no debe estar vacío`;
-            isError = true;
+        } else if (!regexOnlyNubersPositives.test(form.cc)) {
+            errors.cc = `Solo debe escribir números positivos`;
+            return;
+        } else if (form.cc.length < 7 || form.cc.length > 10) {
+            errors.cc = `Escriba números entre 7 y 10 caracteres`;
         }
         if (!form.cargo.trim()) {
             errors.cargo = `Este campo no debe estar vacío`;
-            isError = true;
         }
         if (!form.user.trim()) {
             errors.user = `Este campo no debe estar vacío`;
-            isError = true;
         } else if (!regexEmail.test(form.user)) {
             errors.user = `Escriba un correo válido`;
-            isError = true;
         }
         if (!pass.trim()) {
             errors.pass = `Este campo no debe estar vacío`;
-            isError = true;
         } else if (!regexPassword.test(pass)) {
             errors.pass = `Escriba una contraseña válida
             - Minimo 6 caracteres
@@ -57,7 +65,6 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
             - Al menos un dígito
             - No espacios en blanco
             - Al menos 1 caracter especial`;
-            isError = true;
         }
         return errors;
     }
@@ -72,7 +79,7 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
         const q = query(collection(db, "users"), where("id", "==", id));
         onSnapshot(q, (querySnapshot) => {
             setForm(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[0])
-        })
+        });
     }
 
     const validateErros = () => {
@@ -83,14 +90,14 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
     useEffect(() => {
         const val = () => {
             if (id === 0) {
-                setTitle('Registrar')
+                setTitle('Registrar');
             } else {
-                setTitle('Actualizar')
-                init()
+                setTitle('Actualizar');
+                init();
             }
         }
-        return () => val()
-    }, [])
+        return () => val();
+    }, []);
 
     const submitSignUp = async (e) => {
         e.preventDefault();
@@ -246,7 +253,11 @@ const SignUp = ({ cargoARegistrar, pathBack }) => {
                     </div>
                     <div className="card-footer text-end mt-2">
                         <Link className='btn btn-secondary mx-2' to={pathBack}>Cancelar</Link>
-                        <button className='btn btn-primary' onClick={submitForm} >{nameBtn}</button>
+                        <button
+                            className='btn btn-primary'
+                            onClick={submitForm}
+                            disabled={Object.entries(errors).length > 0 || isEqualsJson(initialFormSignUp, form)}
+                        >{nameBtn}</button>
                     </div>
                 </form>
             </div>

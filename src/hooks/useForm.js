@@ -13,12 +13,13 @@ const UseForm = (initialForm, onValidate) => {
 
   const handleSubmit = async (e, functionSubmit, functionPrev, functionAfter) => {
     e.preventDefault();
-    if (functionPrev) await functionPrev()
-    const err = onValidate(form);
+    if (functionPrev) await functionPrev();
+    const err = await onValidate(form);
     if (Object.entries(err).length === 0) {
       await functionSubmit();
     } else {
       setErrors(err);
+      return;
     }
     if (functionAfter) await functionAfter()
   }
